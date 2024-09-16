@@ -1,6 +1,6 @@
 ﻿using Data.Entities;
 
-namespace Data.Repositories;
+namespace Data.Interfaces;
 public interface IContactRepository
 {
     Task AddAsync(Contact contact);
