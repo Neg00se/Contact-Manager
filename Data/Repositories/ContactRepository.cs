@@ -27,14 +27,13 @@ public class ContactRepository : IContactRepository
 
     public async Task AddAsync(Contact contact)
     {
+
         await _context.Contacts.AddAsync(contact);
-        await _context.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(Contact contact)
     {
         _context.Contacts.Update(contact);
-        await _context.SaveChangesAsync();
     }
 
     public async Task RemoveAsync(int id)
@@ -43,7 +42,8 @@ public class ContactRepository : IContactRepository
         if (contact is not null)
         {
             _context.Contacts.Remove(contact);
-            await _context.SaveChangesAsync();
         }
     }
+
+
 }

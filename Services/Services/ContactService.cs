@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using Data;
 using Data.Entities;
 using Data.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -11,10 +12,12 @@ namespace Services.Services;
 public class ContactService : IContactService
 {
     private readonly IContactRepository _contactRepo;
+    private readonly UnitOfWork _unitOfWork;
 
-    public ContactService(IContactRepository contactRepo)
+    public ContactService(IContactRepository contactRepo, UnitOfWork unitOfWork)
     {
         _contactRepo = contactRepo;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task AddAsync(IFormFile file)
@@ -24,10 +27,11 @@ public class ContactService : IContactService
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
         var records = csv.GetRecords<ContactModel>();
-        Contact contact = new();
+
 
         foreach (var record in records)
         {
+            Contact contact = new();
 
             contact.Name = record.Name;
             contact.Dob = record.Dob;
@@ -37,6 +41,8 @@ public class ContactService : IContactService
 
             await _contactRepo.AddAsync(contact);
         }
+
+        await _unitOfWork.SaveAsync();
     }
 
     public async Task<IEnumerable<Contact>> GetAllAsync()
@@ -54,10 +60,13 @@ public class ContactService : IContactService
     public async Task UpdateAsync(Contact contact)
     {
         await _contactRepo.UpdateAsync(contact);
+        await _unitOfWork.SaveAsync();
     }
 
     public async Task DeleteAsync(int id)
     {
         await _contactRepo.RemoveAsync(id);
+        await _unitOfWork.SaveAsync();
+
     }
 }

@@ -46,11 +46,11 @@ public class ContactController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> AddContacts(IFormFile formFile)
+    public async Task<ActionResult> AddContacts([FromForm] IFormFile file)
     {
         try
         {
-            await _contactService.AddAsync(formFile);
+            await _contactService.AddAsync(file);
             return Ok();
         }
         catch (Exception ex)
